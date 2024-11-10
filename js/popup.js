@@ -3,9 +3,15 @@ class TamagotchiPet {
     this.hunger = 100;
     this.happiness = 100;
     this.energy = 100;
+    this.faces = {
+      happy: '^-^',
+      hungry: '°-°',
+      sleepy: '-_-',
+      playing: '^o^'
+    };
     this.initializeControls();
     this.loadState();
-    this.createPet();
+    this.updateFace();
   }
 
   initializeControls() {
@@ -62,8 +68,32 @@ class TamagotchiPet {
     document.getElementById('energy-value').textContent = this.energy;
   }
 
+  updateFace() {
+    const face = document.getElementById('face');
+    // Remove all animation classes first
+    face.className = '';
+
+    if (this.hunger < 30) {
+      face.textContent = this.faces.hungry;
+      face.classList.add('wobble');
+    } else if (this.energy < 30) {
+      face.textContent = this.faces.sleepy;
+      face.classList.add('sleepy');
+    } else if (this.happiness > 80) {
+      face.textContent = this.faces.happy;
+      face.classList.add('bounce');
+    } else {
+      face.textContent = this.faces.happy;
+    }
+  }
+
   feed() {
     this.hunger = Math.min(100, this.hunger + 20);
+    const face = document.getElementById('face');
+    face.className = '';
+    face.textContent = this.faces.happy;
+    face.classList.add('pulse');
+    setTimeout(() => this.updateFace(), 1000);
     this.updateDisplay();
     this.saveState();
   }
@@ -71,12 +101,22 @@ class TamagotchiPet {
   play() {
     this.happiness = Math.min(100, this.happiness + 20);
     this.energy = Math.max(0, this.energy - 10);
+    const face = document.getElementById('face');
+    face.className = '';
+    face.textContent = this.faces.playing;
+    face.classList.add('bounce');
+    setTimeout(() => this.updateFace(), 1000);
     this.updateDisplay();
     this.saveState();
   }
 
   sleep() {
     this.energy = Math.min(100, this.energy + 50);
+    const face = document.getElementById('face');
+    face.className = '';
+    face.textContent = this.faces.sleepy;
+    face.classList.add('sleepy');
+    setTimeout(() => this.updateFace(), 1000);
     this.updateDisplay();
     this.saveState();
   }
