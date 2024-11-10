@@ -1,0 +1,121 @@
+body {
+  width: 300px;
+  height: 400px;
+  padding: 10px;
+  font-family: 'Courier New', monospace;
+  background: #f0f0f0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.device-container {
+  width: 280px;
+  height: 380px;
+  padding: 10px;
+}
+
+.device-frame {
+  background: #ffccd5;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow:
+    inset -4px -4px 0px rgba(0, 0, 0, 0.1),
+    2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.screen {
+  background: #b4b4b4;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.screen-border {
+  background: #808080;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.pixel-display {
+  background: #c3cfa1;
+  height: 200px;
+  border: 2px solid #6b7353;
+  padding: 10px;
+  position: relative;
+}
+
+#pet-display {
+  height: 140px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #6b7353;
+}
+
+.pixel-pet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.pixel-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 8px);
+  grid-template-rows: repeat(12, 8px);
+  gap: 1px;
+}
+
+.pixel {
+  width: 8px;
+  height: 8px;
+}
+
+.pixel.body {
+  background-color: #2c2c2c;
+}
+
+.pixel.eye {
+  background-color: #000;
+}
+
+.pixel.highlight {
+  background-color: #fff;
+  opacity: 0.3;
+}
+
+.display-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #2c2c2c;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.control-btn {
+  width: auto;
+  min-width: 60px;
+  height: 30px;
+  border-radius: 15px;
+  border: none;
+  background: #ff8c9d;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0 10px;
+  box-shadow:
+    inset -2px -2px 0px rgba(0, 0, 0, 0.2),
+    1px 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.control-btn:active {
+  box-shadow:
+    inset 2px 2px 0px rgba(0, 0, 0, 0.2);
+  transform: translateY(1px);
+}
