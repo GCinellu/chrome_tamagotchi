@@ -1,19 +1,29 @@
-export class TamagotchiPet {
+class TamagotchiPet {
   constructor() {
-    this.hunger = 100;
-    this.happiness = 100;
-    this.energy = 100;
-    this.faces = {
-      happy: '^-^',
-      hungry: '°-°',
-      sleepy: '-_-',
-      playing: '^o^',
-      sad: ';-;'
-    };
-    this.initializeControls();
-    this.loadState();
-    this.updateFace();
-    this.startLifeTimer();
+    try {
+      this.hunger = 100;
+      this.happiness = 100;
+      this.energy = 100;
+      this.faces = {
+        happy: '^-^',
+        hungry: '°-°',
+        sleepy: '-_-',
+        playing: '^o^',
+        sad: ';-;'
+      };
+
+      // Check if we're in a Chrome extension context
+      if (typeof chrome === 'undefined' || !chrome.storage) {
+        throw new Error('Chrome storage API not available');
+      }
+
+      this.initializeControls();
+      this.loadState();
+      this.updateFace();
+      this.startLifeTimer();
+    } catch (error) {
+      console.error('Failed to initialize Tamagotchi:', error);
+    }
   }
 
   initializeControls() {
@@ -231,7 +241,16 @@ export class TamagotchiPet {
   }
 }
 
-// Initialize pet when popup opens
+// For the extension
 document.addEventListener('DOMContentLoaded', () => {
-  new TamagotchiPet();
-}); 
+  try {
+    new TamagotchiPet();
+  } catch (error) {
+    console.error('Failed to create Tamagotchi:', error);
+  }
+});
+
+// For testing
+if (typeof exports !== 'undefined') {
+  exports.TamagotchiPet = TamagotchiPet;
+} 
