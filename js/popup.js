@@ -1,4 +1,4 @@
-class TamagotchiPet {
+export class TamagotchiPet {
   constructor() {
     this.hunger = 100;
     this.happiness = 100;
