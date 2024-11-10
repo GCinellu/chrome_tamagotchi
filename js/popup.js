@@ -7,11 +7,13 @@ class TamagotchiPet {
       happy: '^-^',
       hungry: '°-°',
       sleepy: '-_-',
-      playing: '^o^'
+      playing: '^o^',
+      sad: ';-;'
     };
     this.initializeControls();
     this.loadState();
     this.updateFace();
+    this.startLifeTimer();
   }
 
   initializeControls() {
@@ -70,53 +72,113 @@ class TamagotchiPet {
 
   updateFace() {
     const face = document.getElementById('face');
-    // Remove all animation classes first
     face.className = '';
 
-    if (this.hunger < 30) {
+    if (this.hunger < 30 && this.energy < 30) {
+      face.textContent = this.faces.sad;
+      face.classList.add('critical-wobble');
+    }
+    else if (this.hunger < 30) {
       face.textContent = this.faces.hungry;
-      face.classList.add('wobble');
-    } else if (this.energy < 30) {
+      face.classList.add('hungry-wobble');
+    }
+    else if (this.energy < 30) {
       face.textContent = this.faces.sleepy;
-      face.classList.add('sleepy');
-    } else if (this.happiness > 80) {
+      face.classList.add('sleepy-sway');
+    }
+    else if (this.happiness < 30) {
+      face.textContent = this.faces.sad;
+      face.classList.add('sad-bounce');
+    }
+    else if (this.happiness > 80 && this.hunger > 70 && this.energy > 70) {
       face.textContent = this.faces.happy;
-      face.classList.add('bounce');
-    } else {
+      face.classList.add('happy-bounce');
+    }
+    else {
       face.textContent = this.faces.happy;
+      face.classList.add('gentle-float');
     }
   }
 
+  showMessage(message) {
+    // Remove any existing messages first
+    const existingMessage = document.querySelector('.pet-message');
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'pet-message';
+    messageDiv.textContent = message;
+
+    // Add to the device-frame instead of pet-display for better positioning
+    document.querySelector('.device-frame').appendChild(messageDiv);
+
+    // Remove the message after 2 seconds
+    setTimeout(() => {
+      if (messageDiv.parentElement) {
+        messageDiv.remove();
+      }
+    }, 2000);
+  }
+
   feed() {
-    this.hunger = Math.min(100, this.hunger + 20);
+    if (this.energy < 10) {
+      this.showMessage("Too tired to eat!");
+      return;
+    }
+
     const face = document.getElementById('face');
     face.className = '';
     face.textContent = this.faces.happy;
-    face.classList.add('pulse');
-    setTimeout(() => this.updateFace(), 1000);
+    face.style.animation = 'eat-animation 0.5s ease';
+
+    face.addEventListener('animationend', () => {
+      face.style.animation = '';
+      this.updateFace();
+    }, { once: true });
+
+    this.hunger = Math.min(100, this.hunger + 20);
+    this.energy = Math.max(0, this.energy - 5);
     this.updateDisplay();
     this.saveState();
   }
 
   play() {
-    this.happiness = Math.min(100, this.happiness + 20);
-    this.energy = Math.max(0, this.energy - 10);
+    if (this.energy < 20 || this.hunger < 20) {
+      this.showMessage(this.energy < 20 ? "Too tired to play!" : "Too hungry to play!");
+      return;
+    }
+
     const face = document.getElementById('face');
     face.className = '';
     face.textContent = this.faces.playing;
-    face.classList.add('bounce');
-    setTimeout(() => this.updateFace(), 1000);
+    face.style.animation = 'play-animation 0.8s ease';
+
+    face.addEventListener('animationend', () => {
+      face.style.animation = '';
+      this.updateFace();
+    }, { once: true });
+
+    this.happiness = Math.min(100, this.happiness + 20);
+    this.energy = Math.max(0, this.energy - 15);
+    this.hunger = Math.max(0, this.hunger - 10);
     this.updateDisplay();
     this.saveState();
   }
 
   sleep() {
-    this.energy = Math.min(100, this.energy + 50);
     const face = document.getElementById('face');
     face.className = '';
     face.textContent = this.faces.sleepy;
-    face.classList.add('sleepy');
-    setTimeout(() => this.updateFace(), 1000);
+    face.style.animation = 'sleep-animation 2s ease';
+
+    face.addEventListener('animationend', () => {
+      face.style.animation = '';
+      this.updateFace();
+    }, { once: true });
+
+    this.energy = Math.min(100, this.energy + 50);
     this.updateDisplay();
     this.saveState();
   }
@@ -129,6 +191,43 @@ class TamagotchiPet {
         energy: this.energy
       }
     });
+  }
+
+  startLifeTimer() {
+    // Update pet state every 10 seconds
+    setInterval(() => {
+      this.updatePetState();
+    }, 10000);
+  }
+
+  updatePetState() {
+    // Natural decrease in stats
+    this.hunger = Math.max(0, this.hunger - 2);
+    this.energy = Math.max(0, this.energy - 1);
+
+    // Happiness decreases based on conditions
+    let happinessDecrease = 1; // Base decrease
+
+    // More unhappy if hungry
+    if (this.hunger < 30) {
+      happinessDecrease += 2;
+    }
+
+    // More unhappy if tired
+    if (this.energy < 30) {
+      happinessDecrease += 2;
+    }
+
+    // Very unhappy if both hungry and tired
+    if (this.hunger < 30 && this.energy < 30) {
+      happinessDecrease += 3;
+    }
+
+    this.happiness = Math.max(0, this.happiness - happinessDecrease);
+
+    // Update display and save state
+    this.updateDisplay();
+    this.saveState();
   }
 }
 

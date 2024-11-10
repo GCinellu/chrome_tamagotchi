@@ -106,72 +106,86 @@ body {
   transform: translateY(1px);
 }
 
-/* Animations */
-@keyframes bounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
+/* Base animation keyframes */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
 }
 
-@keyframes wobble {
-
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  25% {
-    transform: rotate(-10deg);
-  }
-
-  75% {
-    transform: rotate(10deg);
-  }
+@keyframes happy-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.1); }
 }
 
-@keyframes pulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
+@keyframes hungry-wobble {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-15deg); }
+  75% { transform: rotate(15deg); }
 }
 
-@keyframes sleepy {
+@keyframes sleepy-sway {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(3px) rotate(5deg); }
+}
 
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
+@keyframes critical-wobble {
+  0%, 100% { transform: rotate(0deg) scale(0.95); }
+  25% { transform: rotate(-20deg) scale(1); }
+  75% { transform: rotate(20deg) scale(1); }
+}
 
-  50% {
-    transform: translateY(5px) rotate(5deg);
-  }
+@keyframes sad-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
 }
 
 /* Animation classes */
-.bounce {
-  animation: bounce 0.5s ease infinite;
+.gentle-float {
+  animation: float 2s ease-in-out infinite;
 }
 
-.wobble {
-  animation: wobble 0.5s ease infinite;
+.happy-bounce {
+  animation: happy-bounce 0.8s ease-in-out infinite;
 }
 
-.pulse {
-  animation: pulse 1s ease infinite;
+.hungry-wobble {
+  animation: hungry-wobble 0.5s ease-in-out infinite;
 }
 
-.sleepy {
-  animation: sleepy 2s ease infinite;
+.sleepy-sway {
+  animation: sleepy-sway 2s ease-in-out infinite;
+}
+
+.critical-wobble {
+  animation: critical-wobble 0.4s ease-in-out infinite;
+}
+
+.sad-bounce {
+  animation: sad-bounce 1.5s ease-in-out infinite;
+}
+
+/* Transition between states */
+#face {
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+/* Action animations */
+@keyframes eat-animation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes play-animation {
+  0% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(-15deg) translateY(-5px); }
+  75% { transform: rotate(15deg) translateY(-5px); }
+  100% { transform: rotate(0deg) translateY(0); }
+}
+
+@keyframes sleep-animation {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(3px) rotate(3deg); opacity: 0.7; }
+  100% { transform: translateY(0) rotate(0deg); }
 }
